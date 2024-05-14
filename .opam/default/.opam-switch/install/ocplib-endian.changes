@@ -1,0 +1,44 @@
+opam-version: "2.0"
+added: [
+  "doc/ocplib-endian" {"D"}
+  "doc/ocplib-endian/CHANGES.md" {"F:S1427T1715434497.45"}
+  "doc/ocplib-endian/README.md" {"F:S825T1715434497.45"}
+  "lib/ocplib-endian" {"D"}
+  "lib/ocplib-endian/META" {"F:S621T1715434497.36"}
+  "lib/ocplib-endian/bigstring/endianBigstring.cmi"
+    {"F:S13500T1715434497.36"}
+  "lib/ocplib-endian/bigstring/endianBigstring.cmt"
+    {"F:S159672T1715434497.36"}
+  "lib/ocplib-endian/bigstring/endianBigstring.cmti"
+    {"F:S45371T1715434497.36"}
+  "lib/ocplib-endian/bigstring/endianBigstring.cmx"
+    {"F:S21816T1715434497.36"}
+  "lib/ocplib-endian/bigstring/endianBigstring.ml" {"F:S15169T1715434497.36"}
+  "lib/ocplib-endian/bigstring/endianBigstring.mli" {"F:S4546T1715434497.36"}
+  "lib/ocplib-endian/bigstring/ocplib_endian_bigstring.a"
+    {"F:S71968T1715434497.36"}
+  "lib/ocplib-endian/bigstring/ocplib_endian_bigstring.cma"
+    {"F:S76919T1715434497.37"}
+  "lib/ocplib-endian/bigstring/ocplib_endian_bigstring.cmxa"
+    {"F:S471T1715434497.37"}
+  "lib/ocplib-endian/bigstring/ocplib_endian_bigstring.cmxs"
+    {"F:S77720T1715434497.45"}
+  "lib/ocplib-endian/dune-package" {"F:S2243T1715434497.37"}
+  "lib/ocplib-endian/endianBytes.cmi" {"F:S14288T1715434497.37"}
+  "lib/ocplib-endian/endianBytes.cmt" {"F:S159486T1715434497.37"}
+  "lib/ocplib-endian/endianBytes.cmti" {"F:S46274T1715434497.37"}
+  "lib/ocplib-endian/endianBytes.cmx" {"F:S20599T1715434497.37"}
+  "lib/ocplib-endian/endianBytes.ml" {"F:S14965T1715434497.37"}
+  "lib/ocplib-endian/endianBytes.mli" {"F:S4373T1715434497.37"}
+  "lib/ocplib-endian/endianString.cmi" {"F:S15074T1715434497.37"}
+  "lib/ocplib-endian/endianString.cmt" {"F:S161467T1715434497.37"}
+  "lib/ocplib-endian/endianString.cmti" {"F:S47935T1715434497.37"}
+  "lib/ocplib-endian/endianString.cmx" {"F:S20941T1715434497.37"}
+  "lib/ocplib-endian/endianString.ml" {"F:S15373T1715434497.37"}
+  "lib/ocplib-endian/endianString.mli" {"F:S4790T1715434497.37"}
+  "lib/ocplib-endian/ocplib_endian.a" {"F:S141316T1715434497.37"}
+  "lib/ocplib-endian/ocplib_endian.cma" {"F:S153915T1715434497.45"}
+  "lib/ocplib-endian/ocplib_endian.cmxa" {"F:S1058T1715434497.45"}
+  "lib/ocplib-endian/ocplib_endian.cmxs" {"F:S131856T1715434497.45"}
+  "lib/ocplib-endian/opam" {"F:S1426T1715434497.45"}
+]

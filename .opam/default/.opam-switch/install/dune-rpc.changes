@@ -1,0 +1,152 @@
+opam-version: "2.0"
+added: [
+  "doc/dune-rpc" {"D"}
+  "doc/dune-rpc/CHANGES.md" {"F:S167708T1715432416.28"}
+  "doc/dune-rpc/LICENSE.md" {"F:S1111T1715432416.28"}
+  "doc/dune-rpc/README.md" {"F:S6006T1715432416.28"}
+  "lib/dune-rpc" {"D"}
+  "lib/dune-rpc/META" {"F:S630T1715432416.17"}
+  "lib/dune-rpc/dune-package" {"F:S7544T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.a" {"F:S6788T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.cma" {"F:S12775T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.cmi" {"F:S26953T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.cmt" {"F:S57678T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.cmti" {"F:S131987T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.cmx" {"F:S13984T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.cmxa" {"F:S2293T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.cmxs" {"F:S20368T1715432416.27"}
+  "lib/dune-rpc/dune_rpc.ml" {"F:S2243T1715432416.17"}
+  "lib/dune-rpc/dune_rpc.mli" {"F:S16421T1715432416.17"}
+  "lib/dune-rpc/opam" {"F:S871T1715432416.17"}
+  "lib/dune-rpc/private/conv.ml" {"F:S15461T1715432416.17"}
+  "lib/dune-rpc/private/conv.mli" {"F:S3091T1715432416.17"}
+  "lib/dune-rpc/private/dbus_address.ml" {"F:S18243T1715432416.17"}
+  "lib/dune-rpc/private/dbus_address.mli" {"F:S567T1715432416.18"}
+  "lib/dune-rpc/private/diagnostics_v1.ml" {"F:S3344T1715432416.18"}
+  "lib/dune-rpc/private/diagnostics_v1.mli" {"F:S548T1715432416.18"}
+  "lib/dune-rpc/private/dune_rpc_private.a" {"F:S712780T1715432416.18"}
+  "lib/dune-rpc/private/dune_rpc_private.cma" {"F:S792486T1715432416.18"}
+  "lib/dune-rpc/private/dune_rpc_private.cmi" {"F:S78686T1715432416.18"}
+  "lib/dune-rpc/private/dune_rpc_private.cmt" {"F:S306492T1715432416.19"}
+  "lib/dune-rpc/private/dune_rpc_private.cmti" {"F:S253475T1715432416.19"}
+  "lib/dune-rpc/private/dune_rpc_private.cmx" {"F:S55115T1715432416.19"}
+  "lib/dune-rpc/private/dune_rpc_private.cmxa" {"F:S30605T1715432416.19"}
+  "lib/dune-rpc/private/dune_rpc_private.cmxs" {"F:S666744T1715432416.27"}
+  "lib/dune-rpc/private/dune_rpc_private.ml" {"F:S23880T1715432416.2"}
+  "lib/dune-rpc/private/dune_rpc_private.mli" {"F:S11985T1715432416.2"}
+  "lib/dune-rpc/private/dune_rpc_private__.cmi" {"F:S1729T1715432416.2"}
+  "lib/dune-rpc/private/dune_rpc_private__.cmt" {"F:S9400T1715432416.2"}
+  "lib/dune-rpc/private/dune_rpc_private__.cmx" {"F:S533T1715432416.2"}
+  "lib/dune-rpc/private/dune_rpc_private__.ml" {"F:S1275T1715432416.21"}
+  "lib/dune-rpc/private/dune_rpc_private__Conv.cmi"
+    {"F:S10315T1715432416.21"}
+  "lib/dune-rpc/private/dune_rpc_private__Conv.cmt"
+    {"F:S244794T1715432416.21"}
+  "lib/dune-rpc/private/dune_rpc_private__Conv.cmti"
+    {"F:S46988T1715432416.21"}
+  "lib/dune-rpc/private/dune_rpc_private__Conv.cmx" {"F:S7652T1715432416.21"}
+  "lib/dune-rpc/private/dune_rpc_private__Dbus_address.cmi"
+    {"F:S942T1715432416.21"}
+  "lib/dune-rpc/private/dune_rpc_private__Dbus_address.cmt"
+    {"F:S79489T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Dbus_address.cmti"
+    {"F:S6638T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Dbus_address.cmx"
+    {"F:S6381T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Diagnostics_v1.cmi"
+    {"F:S2973T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Diagnostics_v1.cmt"
+    {"F:S46928T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Diagnostics_v1.cmti"
+    {"F:S10700T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Diagnostics_v1.cmx"
+    {"F:S2683T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Exported_types.cmi"
+    {"F:S13608T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Exported_types.cmt"
+    {"F:S308459T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Exported_types.cmti"
+    {"F:S54448T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Exported_types.cmx"
+    {"F:S10896T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Fiber_intf.cmi"
+    {"F:S1948T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Fiber_intf.cmt"
+    {"F:S11296T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Fiber_intf.cmx"
+    {"F:S231T1715432416.25"}
+  "lib/dune-rpc/private/dune_rpc_private__Import.cmi"
+    {"F:S2204T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Import.cmt"
+    {"F:S10986T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Import.cmx"
+    {"F:S1170T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Menu.cmi" {"F:S3115T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Menu.cmt"
+    {"F:S17288T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Menu.cmti"
+    {"F:S11094T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Menu.cmx" {"F:S2993T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Procedures.cmi"
+    {"F:S4869T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Procedures.cmt"
+    {"F:S103096T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Procedures.cmti"
+    {"F:S17682T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Procedures.cmx"
+    {"F:S30685T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Registry.cmi"
+    {"F:S5849T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Registry.cmt"
+    {"F:S107917T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Registry.cmti"
+    {"F:S23766T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Registry.cmx"
+    {"F:S15901T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Sub.cmi" {"F:S2808T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Sub.cmt" {"F:S9596T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Sub.cmti" {"F:S9062T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Sub.cmx" {"F:S3150T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Types.cmi"
+    {"F:S31536T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Types.cmt"
+    {"F:S224594T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Types.cmti"
+    {"F:S114639T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Types.cmx"
+    {"F:S20891T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Versioned.cmi"
+    {"F:S8069T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Versioned.cmt"
+    {"F:S161479T1715432416.26"}
+  "lib/dune-rpc/private/dune_rpc_private__Versioned.cmti"
+    {"F:S29862T1715432416.27"}
+  "lib/dune-rpc/private/dune_rpc_private__Versioned.cmx"
+    {"F:S6270T1715432416.27"}
+  "lib/dune-rpc/private/dune_rpc_private__Where.cmi"
+    {"F:S4952T1715432416.27"}
+  "lib/dune-rpc/private/dune_rpc_private__Where.cmt"
+    {"F:S58945T1715432416.27"}
+  "lib/dune-rpc/private/dune_rpc_private__Where.cmti"
+    {"F:S19453T1715432416.27"}
+  "lib/dune-rpc/private/dune_rpc_private__Where.cmx"
+    {"F:S3849T1715432416.27"}
+  "lib/dune-rpc/private/exported_types.ml" {"F:S23011T1715432416.27"}
+  "lib/dune-rpc/private/exported_types.mli" {"F:S4204T1715432416.27"}
+  "lib/dune-rpc/private/fiber_intf.ml" {"F:S563T1715432416.27"}
+  "lib/dune-rpc/private/import.ml" {"F:S573T1715432416.27"}
+  "lib/dune-rpc/private/menu.ml" {"F:S1374T1715432416.27"}
+  "lib/dune-rpc/private/menu.mli" {"F:S616T1715432416.27"}
+  "lib/dune-rpc/private/procedures.ml" {"F:S6714T1715432416.27"}
+  "lib/dune-rpc/private/procedures.mli" {"F:S951T1715432416.27"}
+  "lib/dune-rpc/private/registry.ml" {"F:S5401T1715432416.27"}
+  "lib/dune-rpc/private/registry.mli" {"F:S1416T1715432416.27"}
+  "lib/dune-rpc/private/sub.ml" {"F:S280T1715432416.27"}
+  "lib/dune-rpc/private/sub.mli" {"F:S186T1715432416.27"}
+  "lib/dune-rpc/private/types.ml" {"F:S13803T1715432416.27"}
+  "lib/dune-rpc/private/types.mli" {"F:S5741T1715432416.27"}
+  "lib/dune-rpc/private/versioned.ml" {"F:S19431T1715432416.27"}
+  "lib/dune-rpc/private/versioned.mli" {"F:S2701T1715432416.27"}
+  "lib/dune-rpc/private/where.ml" {"F:S4237T1715432416.27"}
+  "lib/dune-rpc/private/where.mli" {"F:S1115T1715432416.27"}
+]

@@ -1,0 +1,2 @@
+pour générer une formule de taille n dans le fichier "bla.txt" : 
+./gen bla.txt n 

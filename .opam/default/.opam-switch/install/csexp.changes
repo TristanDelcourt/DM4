@@ -1,0 +1,21 @@
+opam-version: "2.0"
+added: [
+  "doc/csexp" {"D"}
+  "doc/csexp/CHANGES.md" {"F:S1434T1715432253.88"}
+  "doc/csexp/LICENSE.md" {"F:S1111T1715432253.88"}
+  "doc/csexp/README.md" {"F:S1150T1715432253.88"}
+  "lib/csexp" {"D"}
+  "lib/csexp/META" {"F:S164T1715432253.87"}
+  "lib/csexp/csexp.a" {"F:S49064T1715432253.88"}
+  "lib/csexp/csexp.cma" {"F:S64625T1715432253.88"}
+  "lib/csexp/csexp.cmi" {"F:S12474T1715432253.88"}
+  "lib/csexp/csexp.cmt" {"F:S150572T1715432253.88"}
+  "lib/csexp/csexp.cmti" {"F:S68706T1715432253.88"}
+  "lib/csexp/csexp.cmx" {"F:S2330T1715432253.88"}
+  "lib/csexp/csexp.cmxa" {"F:S725T1715432253.88"}
+  "lib/csexp/csexp.cmxs" {"F:S64944T1715432253.88"}
+  "lib/csexp/csexp.ml" {"F:S10856T1715432253.88"}
+  "lib/csexp/csexp.mli" {"F:S13457T1715432253.88"}
+  "lib/csexp/dune-package" {"F:S678T1715432253.88"}
+  "lib/csexp/opam" {"F:S1550T1715432253.88"}
+]

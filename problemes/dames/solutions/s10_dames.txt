@@ -1,0 +1,11 @@
+La formule est satisfiable en assignant 1 aux variables suivantes et 0 aux autres
+X_0_0
+X_1_2
+X_2_5
+X_3_7
+X_4_9
+X_5_4
+X_6_8
+X_7_1
+X_8_3
+X_9_6

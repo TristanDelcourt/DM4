@@ -1,0 +1,38 @@
+opam-version: "2.0"
+added: [
+  "doc/logs" {"D"}
+  "doc/logs/CHANGES.md" {"F:S2616T1715434567.98"}
+  "doc/logs/LICENSE.md" {"F:S738T1715434567.98"}
+  "doc/logs/README.md" {"F:S1659T1715434567.98"}
+  "doc/logs/tags.ml" {"F:S1488T1715434567.98"}
+  "doc/logs/tool.ml" {"F:S1044T1715434567.98"}
+  "lib/logs" {"D"}
+  "lib/logs/META" {"F:S1855T1715434567.97"}
+  "lib/logs/logs.a" {"F:S74748T1715434567.97"}
+  "lib/logs/logs.cma" {"F:S76999T1715434567.97"}
+  "lib/logs/logs.cmi" {"F:S11803T1715434567.97"}
+  "lib/logs/logs.cmti" {"F:S96019T1715434567.97"}
+  "lib/logs/logs.cmx" {"F:S11675T1715434567.97"}
+  "lib/logs/logs.cmxa" {"F:S834T1715434567.97"}
+  "lib/logs/logs.cmxs" {"F:S90384T1715434567.97"}
+  "lib/logs/logs.mli" {"F:S23855T1715434567.97"}
+  "lib/logs/logs_fmt_top_init.ml" {"F:S1299T1715434567.97"}
+  "lib/logs/logs_lwt.a" {"F:S21400T1715434567.98"}
+  "lib/logs/logs_lwt.cma" {"F:S23646T1715434567.98"}
+  "lib/logs/logs_lwt.cmi" {"F:S4736T1715434567.98"}
+  "lib/logs/logs_lwt.cmti" {"F:S28307T1715434567.98"}
+  "lib/logs/logs_lwt.cmx" {"F:S3184T1715434567.98"}
+  "lib/logs/logs_lwt.cmxa" {"F:S529T1715434567.98"}
+  "lib/logs/logs_lwt.cmxs" {"F:S43384T1715434567.98"}
+  "lib/logs/logs_lwt.mli" {"F:S5077T1715434567.98"}
+  "lib/logs/logs_threaded.a" {"F:S5632T1715434567.98"}
+  "lib/logs/logs_threaded.cma" {"F:S3435T1715434567.98"}
+  "lib/logs/logs_threaded.cmi" {"F:S311T1715434567.98"}
+  "lib/logs/logs_threaded.cmti" {"F:S4495T1715434567.98"}
+  "lib/logs/logs_threaded.cmx" {"F:S538T1715434567.98"}
+  "lib/logs/logs_threaded.cmxa" {"F:S507T1715434567.98"}
+  "lib/logs/logs_threaded.cmxs" {"F:S18536T1715434567.98"}
+  "lib/logs/logs_threaded.mli" {"F:S1446T1715434567.98"}
+  "lib/logs/logs_top_init.ml" {"F:S1338T1715434567.98"}
+  "lib/logs/opam" {"F:S2016T1715434567.97"}
+]

@@ -1,0 +1,30 @@
+opam-version: "2.0"
+added: [
+  "doc/uuseg" {"D"}
+  "doc/uuseg/CHANGES.md" {"F:S2328T1715434594.16"}
+  "doc/uuseg/LICENSE.md" {"F:S739T1715434594.16"}
+  "doc/uuseg/README.md" {"F:S1473T1715434594.16"}
+  "doc/uuseg/examples.ml" {"F:S1110T1715434594.16"}
+  "doc/uuseg/odoc-pages/index.mld" {"F:S186T1715434594.16"}
+  "lib/uuseg" {"D"}
+  "lib/uuseg/META" {"F:S337T1715434594.16"}
+  "lib/uuseg/opam" {"F:S1551T1715434594.16"}
+  "lib/uuseg/uuseg.a" {"F:S150386T1715434594.16"}
+  "lib/uuseg/uuseg.cma" {"F:S143847T1715434594.16"}
+  "lib/uuseg/uuseg.cmi" {"F:S2685T1715434594.16"}
+  "lib/uuseg/uuseg.cmti" {"F:S29156T1715434594.16"}
+  "lib/uuseg/uuseg.cmx" {"F:S2721T1715434594.16"}
+  "lib/uuseg/uuseg.cmxa" {"F:S4980T1715434594.16"}
+  "lib/uuseg/uuseg.cmxs" {"F:S126960T1715434594.16"}
+  "lib/uuseg/uuseg.mli" {"F:S8672T1715434594.16"}
+  "lib/uuseg/uuseg_base.cmx" {"F:S593T1715434594.16"}
+  "lib/uuseg/uuseg_buf.cmx" {"F:S1178T1715434594.16"}
+  "lib/uuseg/uuseg_grapheme_cluster.cmx" {"F:S1135T1715434594.16"}
+  "lib/uuseg/uuseg_line_break.cmx" {"F:S1699T1715434594.16"}
+  "lib/uuseg/uuseg_sentence.cmx" {"F:S2286T1715434594.16"}
+  "lib/uuseg/uuseg_string.cmi" {"F:S1838T1715434594.16"}
+  "lib/uuseg/uuseg_string.cmti" {"F:S15667T1715434594.16"}
+  "lib/uuseg/uuseg_string.cmx" {"F:S2168T1715434594.16"}
+  "lib/uuseg/uuseg_string.mli" {"F:S3977T1715434594.16"}
+  "lib/uuseg/uuseg_word.cmx" {"F:S1374T1715434594.16"}
+]
