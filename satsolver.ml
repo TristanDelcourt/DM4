@@ -437,12 +437,12 @@ let quine_fnc (f : formule) : sat_result =
 (*quine v3*)
 
 let convert_to_id (f: formule): int*formule*(int*string) list = 
-  let rec aux f1 (n: int) acc = 
-    match liste_var f1 with
+  let rec aux f1 (n: int) acc vars = 
+    match vars with
       | [] -> (n ,f1, acc)
-      | x::q -> aux (subst f1 x (Id n)) (n+1) ((n, x)::acc)
+      | x::q -> aux (subst f1 x (Id n)) (n+1) ((n, x)::acc) q
   in
-  aux f 0 []
+  aux f 0 [] (liste_var f)
 
 let rec subst_id (f : formule) (n : int) (g : formule) : formule =
 match f with
