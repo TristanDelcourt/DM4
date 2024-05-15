@@ -1,5 +1,6 @@
 type formule =
   | Var of string
+  | Id of int
   | Top
   | Bot
   | And of formule * formule
@@ -130,7 +131,8 @@ let rec compte_ops (f : formule) : int =
   | Var _ | Top | Bot -> 0
   | And (a, b) | Or (a, b) -> 1 + compte_ops a + compte_ops b
   | Not a -> 1 + compte_ops a
-
+  | Id n -> failwith "pas le bon algo"
+ 
 (*verifie si une liste est triee dans l'ordre croissant et sans doublon*)
 let rec st_croissant (l : 'a list) : bool =
   match l with
@@ -159,6 +161,7 @@ let liste_var (f : formule) : string list =
     | And (a, b) | Or (a, b) -> union (aux a l) (aux b l)
     | Not a -> aux a l
     | Top | Bot -> l
+    | Id n -> []
   in
   aux f []
 
@@ -175,6 +178,7 @@ let rec interpret_valuation (v : valuation) (f : formule) : bool =
   | And (a, b) -> interpret_valuation v a && interpret_valuation v b
   | Or (a, b) -> interpret_valuation v a || interpret_valuation v b
   | Not a -> not (interpret_valuation v a)
+  | Id n -> failwith "pas le bon algo"
 
 (* pour un nombre binaire écrit dans une liste renvoie le même nombre binaire + 1*)
 let rec add_one (l : bool list) : bool list =
@@ -355,7 +359,8 @@ let est_fnc (f : formule) : bool =
         |Var _ |Top |Bot -> true
         |Not f2 -> aux b_ou true f2
         |Or (f1,f2) -> (aux true b_non f2)&&(aux true b_non f2)
-        |And (f1,f2) -> (aux b_ou b_non f2)&&(aux b_ou b_non f2)))
+        |And (f1,f2) -> (aux b_ou b_non f2)&&(aux b_ou b_non f2)
+        | Id n -> failwith "pas le bon algo"))
   in aux false false f
 
 let rec creer_val (s : sat_result) (v : valuation) : sat_result =
@@ -428,6 +433,74 @@ let quine_fnc (f : formule) : sat_result =
   let vars = liste_var f in
   creer_val (aux (simpl_full f) vars) (valuation_init vars)
 (*end quine FNC*)
+
+(*quine v3*)
+
+let convert_to_id (f: formule): int*formule*(int*string) list = 
+  let rec aux f1 (n: int) acc = 
+    match liste_var f1 with
+      | [] -> (n ,f1, acc)
+      | x::q -> aux (subst f1 x (Id n)) (n+1) ((n, x)::acc)
+  in
+  aux f 0 []
+
+let rec subst_id (f : formule) (n : int) (g : formule) : formule =
+match f with
+| Id m -> if n = m then g else f
+| And (a, b) -> And (subst_id a n g, subst_id b n g)
+| Or (a, b) -> Or (subst_id a n g, subst_id b n g)
+| Not a -> Not (subst_id a n g)
+| _ -> f
+
+let rec valuation_init_id n = 
+  match n>=0 with 
+    | false -> []
+    | true -> (n, false)::valuation_init_id (n-1)
+
+let id_to_vals (l: (int*bool) list option) (d: (int*string) list) : sat_result = 
+  match l with
+    | None -> None
+    | Some l1 -> 
+      let rec aux l2 d2 = 
+        match l2 with
+          | [] -> Some []
+          | (x, b)::q -> let v = aux q d2 in 
+            (match v with 
+              | None -> None 
+              | Some v1 -> Some ((List.assoc x d2, b)::v1))
+      in
+      aux l1 d
+  
+let quine_v3 (f : formule) : sat_result =
+  let rec aux (f1 : formule) (n: int) : (int*bool) list option =
+    match f1 with
+    | Top -> Some (valuation_init_id n)
+    | Bot -> None
+    | phi -> (
+        let f1, b1 = simpl_full_compt (subst_id phi n Top) in
+        let f2, b2 = simpl_full_compt (subst_id phi n Bot) in
+        match b1 > b2 with
+        | true -> (
+            match aux f1 (n-1) with
+            | Some v -> Some ((n, true) :: v)
+            | None -> (
+                match aux f2 (n-1) with
+                | Some v -> Some ((n, false) :: v)
+                | None -> None))
+        | false -> (
+            match aux f2 (n-1) with
+            | Some v -> Some ((n, false) :: v)
+            | None -> (
+                match aux f1 (n-1) with
+                | Some v -> Some ((n, true) :: v)
+                | None -> None)))
+  in
+  let n, f1, d = convert_to_id f in
+  let res = aux (simpl_full f1) (n-1) in
+  id_to_vals res d
+
+
+(*end quine v3*)
 
 (*** Tests ***)
 
@@ -522,6 +595,13 @@ let test_quine () =
     | Some v -> interpret_valuation v formule
   in
 
+  let q3 f b =
+    let formule = parse f in
+    match quine_v3 formule with
+    | None -> b
+    | Some v -> interpret_valuation v formule
+  in
+
   let qFNC f b =
     let formule = parse f in
     match quine_fnc formule with
@@ -544,6 +624,15 @@ let test_quine () =
   assert (q2 "a|b|c|d|e|f|g|h" false);
   assert (
     q2
+      "~u=~g=~o>~u>j>~m&j=f>~g|t=~h&c>h|p|j>F>F=~x|~e=p>g|v&d=~h>~j=~v>c&~f=h&~r=t|~r>~s|~h&~g|~e=~a|~p>~q|~d=b>~z&i>~p|r&~g&v&~u=l=~w=a&~u|~g>~n|v>x&l|r>b|~o&p&~w&v>g&i|x&~v&q"
+      false);
+
+  assert (q3 "x&~x" true);
+  assert (q3 "x|y" false);
+  assert (q3 "x & y | y & ~x" false);
+  assert (q3 "a|b|c|d|e|f|g|h" false);
+  assert (
+    q3
       "~u=~g=~o>~u>j>~m&j=f>~g|t=~h&c>h|p|j>F>F=~x|~e=p>g|v&d=~h>~j=~v>c&~f=h&~r=t|~r>~s|~h&~g|~e=~a|~p>~q|~d=b>~z&i>~p|r&~g&v&~u=l=~w=a&~u|~g>~n|v>x&l|r>b|~o&p&~w&v>g&i|x&~v&q"
       false);
 
@@ -692,6 +781,7 @@ let main () =
     if Array.mem "-naif" Sys.argv then 0
     else if Array.mem "-q1" Sys.argv then 1
     else if Array.mem "-q2" Sys.argv then 2
+    else if Array.mem "-q3" Sys.argv then 3
     else -1
   in
 
@@ -710,7 +800,8 @@ let main () =
           | 0 -> satsolver_naif formule
           | 1 -> quine formule
           | 2 -> quine_v2 formule
-          | _ -> quine_v2 formule (*Solveur par defaut*)
+          | 3 -> quine_v3 formule
+          | _ -> quine_v3 formule (*Solveur par defaut*)
       in
       if hide then () else print_true result;
       if tofile then write_file tofilepath result else ()
