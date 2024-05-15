@@ -1,3 +1,5 @@
+open Hashtbl
+
 type formule =
   | Var of string
   | Id of int
@@ -436,13 +438,27 @@ let quine_fnc (f : formule) : sat_result =
 
 (*quine v3*)
 
-let convert_to_id (f: formule): int*formule*(int*string) list = 
-  let rec aux f1 (n: int) acc vars = 
-    match vars with
-      | [] -> (n ,f1, acc)
-      | x::q -> aux (subst f1 x (Id n)) (n+1) ((n, x)::acc) q
+let create_hash (l: string list) = 
+  let tovar = Hashtbl.create 300 in
+  let toid = Hashtbl.create 300 in
+  
+  let rec fill_hash l1 n : int = match l1 with
+    | [] -> n
+    | x::q -> Hashtbl.add tovar n x;
+              Hashtbl.add toid x n;
+              fill_hash q (n+1)
   in
-  aux f 0 [] (liste_var f)
+  let n = fill_hash l 0 in
+  
+  (n, tovar, toid)
+
+let rec formule_var_to_id (f: formule) toid = 
+  match f with
+    | Var y -> Id (Hashtbl.find toid y)
+    | And (a, b) -> And (formule_var_to_id a toid, formule_var_to_id b toid)
+    | Or (a, b) -> Or (formule_var_to_id a toid, formule_var_to_id b toid)
+    | Not a -> Not (formule_var_to_id a toid)
+    | _ -> f
 
 let rec subst_id (f : formule) (n : int) (g : formule) : formule =
 match f with
@@ -457,7 +473,7 @@ let rec valuation_init_id n =
     | false -> []
     | true -> (n, false)::valuation_init_id (n-1)
 
-let id_to_vals (l: (int*bool) list option) (d: (int*string) list) : sat_result = 
+let id_to_vals (l: (int*bool) list option) d : sat_result = 
   match l with
     | None -> None
     | Some l1 -> 
@@ -467,7 +483,7 @@ let id_to_vals (l: (int*bool) list option) (d: (int*string) list) : sat_result =
           | (x, b)::q -> let v = aux q d2 in 
             (match v with 
               | None -> None 
-              | Some v1 -> Some ((List.assoc x d2, b)::v1))
+              | Some v1 -> Some ((Hashtbl.find d2 x, b)::v1))
       in
       aux l1 d
   
@@ -495,9 +511,10 @@ let quine_v3 (f : formule) : sat_result =
                 | Some v -> Some ((n, true) :: v)
                 | None -> None)))
   in
-  let n, f1, d = convert_to_id f in
+  let n, tovar, toid = create_hash (liste_var f) in
+  let f1 = formule_var_to_id f toid in
   let res = aux (simpl_full f1) (n-1) in
-  id_to_vals res d
+  id_to_vals res tovar
 
 
 (*end quine v3*)

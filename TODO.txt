@@ -1,0 +1,3 @@
+meillieur subst
+
+faire au plus une avec De Morgan et au moins 2 (??)
