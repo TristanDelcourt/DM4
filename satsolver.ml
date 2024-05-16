@@ -254,18 +254,19 @@ let rec subst (f : formule) (x : string) (g : formule) : formule =
 
 let quine (f : formule) : sat_result =
   let rec aux (f1 : formule) (vars : string list) : sat_result =
-    match (f1, vars) with
-    | Top, _ -> Some (valuation_init vars)
-    | Bot, _ -> None
-    | phi, x :: q -> (
+    match f1 with
+    | Top -> Some (valuation_init vars)
+    | Bot -> None
+    | _ -> (match vars with 
+      | x::q -> (
         (*Printf.printf "%s\n%!" x;*)
-        match aux (simpl_full (subst phi x Top)) q with
+        match aux (simpl_full (subst f1 x Top)) q with
         | Some v -> Some ((x, true) :: v)
         | None -> (
-            match aux (simpl_full (subst phi x Bot)) q with
+            match aux (simpl_full (subst f1 x Bot)) q with
             | Some v -> Some ((x, false) :: v)
             | None -> None))
-    | _ -> failwith "impossible"
+      | _ -> failwith "impossible")
   in
   Printf.printf "Solving...\n\n%!";
   aux (simpl_full f) (liste_var f)
@@ -320,28 +321,29 @@ let rec simpl_full_compt (f : formule) : formule * int =
 
 let quine_v2 (f : formule) : sat_result =
   let rec aux (f1 : formule) (vars : string list) : sat_result =
-    match (f1, vars) with
-    | Top, _ -> Some (valuation_init vars)
-    | Bot, _ -> None
-    | phi, x :: q -> (
+    match f1 with
+    | Top -> Some (valuation_init vars)
+    | Bot -> None
+    | _ -> (match vars with
+      | x :: q -> (
         (*Printf.printf "%s\n%!" x;*)
-        let f1, b1 = simpl_full_compt (subst phi x Top) in
-        let f2, b2 = simpl_full_compt (subst phi x Bot) in
+        let f2, b1 = simpl_full_compt (subst f1 x Top) in
+        let f3, b2 = simpl_full_compt (subst f1 x Bot) in
         if b1 > b2 then
-          (match aux f1 q with
+          (match aux f2 q with
             | Some v -> Some ((x, true) :: v)
             | None -> (
-                match aux f2 q with
+                match aux f3 q with
                 | Some v -> Some ((x, false) :: v)
                 | None -> None))
         else 
-          (match aux f2 q with
+          (match aux f3 q with
             | Some v -> Some ((x, false) :: v)
             | None -> (
-                match aux f1 q with
+                match aux f2 q with
                 | Some v -> Some ((x, true) :: v)
                 | None -> None)))
-    | _ -> failwith "impossible"
+      | _ -> failwith "impossible")
   in
   Printf.printf "Solving...\n\n%!";
   aux (simpl_full f) (liste_var f)
@@ -402,30 +404,48 @@ let rec simplify_fnc (f : formule) (x : formule) : formule =
   in
 
   match f with
-  | And (a, And (a1, b1)) -> (
+  | And (And(a1, b1), And (a2, b2)) ->(
+    let f1 = simplify_fnc (And(a1, b1)) x in
+    let f2 = simplify_fnc (And(a2, b2)) x in
+    match f1, f2 with
+      | Bot, _ -> Bot
+      | _, Bot -> Bot
+      | Top, Top -> Top
+      | Top, _ -> f2
+      | _, Top -> f1
+      | _ -> And (f1, f2))
+
+    
+  | And (a, And (a1, b1)) | And (And (a1, b1), a)-> (
       let f1 = iterate a x in
-      match f1 with
-      | Top -> simplify_fnc (And (a1, b1)) x
-      | Bot -> Bot
-      | _ -> And (f1, simplify_fnc (And (a1, b1)) x))
+      let f2 = simplify_fnc (And (a1, b1)) x in
+      match f1, f2 with
+      | Bot, _ -> Bot
+      | _, Bot -> Bot
+      | Top, Top -> Top
+      | Top, _ -> f2
+      | _, Top -> f1
+      | _ -> And (f1, f2))
+      
   | And (a, b) -> (
       let f1, f2 = (iterate a x, iterate b x) in
       match (f1, f2) with
       | Bot, _ -> Bot
       | _, Bot -> Bot
       | Top, Top -> Top
-      | Top, _ -> b
-      | _, Top -> a
+      | Top, _ -> f2
+      | _, Top -> f1
       | _ -> And (f1, f2))
   | _ -> iterate f x (* Plus qu'une conjonction *)
 
 let quine_fnc (f : formule) : sat_result =
   let rec aux (f1 : formule) (vars : string list) : sat_result =
-    match (f1, vars) with
-    | Top, _ -> Some (valuation_init vars)
-    | Bot, _ -> None
-    | _, x :: _ -> (
-        let f2 = simplify_fnc f1 (Var x) in
+    match f1 with
+    | Top -> Some (valuation_init vars)
+    | Bot -> None
+    | _ -> (match vars with 
+      | x ::q ->
+        (let f2 = simplify_fnc f1 (Var x) in
         match aux f2 (liste_var f2) with
         | Some v -> Some ((x, true) :: v)
         | None -> (
@@ -433,7 +453,7 @@ let quine_fnc (f : formule) : sat_result =
             match aux f3 (liste_var f3) with
             | Some v -> Some ((x, false) :: v)
             | None -> None))
-    | _ -> failwith "impossible"
+      | _ -> failwith "impossible")
   in
 
   let vars = liste_var f in
@@ -495,22 +515,22 @@ let quine_v3 (f : formule) : sat_result =
     match f1 with
     | Top -> Some (valuation_init_id n)
     | Bot -> None
-    | phi -> (
+    | _ -> (
         (*Printf.printf "%d\n%!" n;*)
-        let f1, b1 = simpl_full_compt (subst_id phi n Top) in
-        let f2, b2 = simpl_full_compt (subst_id phi n Bot) in
+        let f2, b1 = simpl_full_compt (subst_id f1 n Top) in
+        let f3, b2 = simpl_full_compt (subst_id f1 n Bot) in
         if b1 > b2 then
-          (match aux f1 (n-1) with
+          (match aux f2 (n-1) with
             | Some v -> Some ((n, true) :: v)
             | None -> (
-                match aux f2 (n-1) with
+                match aux f3 (n-1) with
                 | Some v -> Some ((n, false) :: v)
                 | None -> None))
         else 
-          (match aux f2 (n-1) with
+          (match aux f3 (n-1) with
             | Some v -> Some ((n, false) :: v)
             | None -> (
-                match aux f1 (n-1) with
+                match aux f2 (n-1) with
                 | Some v -> Some ((n, true) :: v)
                 | None -> None)))
   in

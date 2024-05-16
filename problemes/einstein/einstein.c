@@ -3,7 +3,161 @@
 #include <string.h>
 #include <stdio.h>
 
+/* traduit que pour un element, au plus une maison y correspond */
+char* au_plus_une_maison (char* elt){
+  char* result = malloc(2) ;
+  int taille = 2 ; 
+  result[0] ='('; 
+  result[1] = '\0' ;
+  char* temp = malloc(11 + 2*strlen(elt));
+  for (int i = 1 ; i<=4 ; i++){
+    for (int j = i+1 ; j<=5 ; j++){
+      if (i == 4 && j==5) {
+        sprintf(temp,"(~%s_%d|~%s_%d))",elt,i,elt,j);
+      } else {
+        sprintf(temp,"(~%s_%d|~%s_%d)&",elt,i,elt,j);
+      }
+      taille += 11 + 2*strlen(elt) ;
+      result = realloc(result,taille);
+      strcat(result,temp);
+    }
+  }
+  free(temp);
+  return result ; 
+}
+
+/* traduit que pour une maison, au plus un element y correspond*/
+char* au_plus_un_elt (int k, char** l){
+  char* result = malloc(2) ;
+  int taille = 2 ; 
+  result[0] ='('; 
+  result[1] = '\0' ;
+  char* temp ; 
+  int taille_temp ;
+  for (int i = 0 ; i<4 ; i++){
+    for (int j = i+1 ; j<5 ; j++){
+      taille_temp = 11 + strlen(l[i]) + strlen(l[j]) ;
+      temp = malloc(taille_temp);
+      if (i == 3 && j==4) {
+        sprintf(temp,"(~%s_%d|~%s_%d))",l[i],k,l[j],k);
+      } else {
+        sprintf(temp,"(~%s_%d|~%s_%d)&",l[i],k,l[j],k);
+      }
+      taille += taille_temp ;
+      result = realloc(result,taille);
+      strcat(result,temp);
+      free(temp);
+    }
+  }
+  return result ; 
+}
+
+char* au_moins_une_maison (char* elt){
+  int taille = 2;
+  char* formule = malloc(taille);
+
+  formule[0] = '(';
+  formule[1] = '\0';
+
+  char* temp = malloc(strlen(elt) + 3);
+
+  for(int i = 1; i <=5 ; i++){
+      sprintf(temp, "%s_%d", elt, i);
+      taille+=strlen(temp) + 1;
+      formule = realloc(formule, taille);
+      strcat(formule, temp);
+      if (i!=5)
+        strcat(formule, "|");
+      else
+        strcat(formule, ")");
+  }
+  free(temp);
+  return formule;
+}
+
+char* au_moins_un_elt (int k, char** l){
+  int taille = 2;
+  char* formule = malloc(taille);
+
+  formule[0] = '(';
+  formule[1] = '\0';
+
+  int taille_temp = strlen(l[0]) + 3;
+  char* temp = malloc(taille_temp);
+
+  for(int i = 0; i < 5 ; i++){
+      int taille_temp = strlen(l[i]) + 3;
+      temp = realloc(temp, taille_temp);
+      sprintf(temp, "%s_%d", l[i], k);
+      taille+=strlen(temp) + 1;
+      formule = realloc(formule, taille);
+      strcat(formule, temp);
+      if (i!=4)
+        strcat(formule, "|");
+      else
+        strcat(formule, ")");
+  }
+  free(temp);
+  return formule;
+}
+
+char* unicite (char** l){
+  int taille = 2;
+  char* formule = malloc(taille);
+
+  formule[0] = '(';
+  formule[1] = '\0';
+
+  char* temp ;
+
+  for (int i = 1 ; i<=5 ; i++){
+    
+    temp = au_plus_un_elt(i,l);
+    taille += strlen(temp) + 3;
+    formule = realloc(formule, taille);
+    strcat(formule,"(");
+    strcat(formule,temp);
+    free(temp);
+    strcat(formule, ")&");
+
+    temp = au_moins_un_elt(i,l);
+    taille += strlen(temp) + 3;
+    formule = realloc(formule, taille);
+    strcat(formule, "(");
+    strcat(formule,temp);
+    free(temp);
+    strcat(formule, ")&");
+  }
+
+  for (int i = 0 ; i<5 ; i++){
+
+    temp = au_plus_une_maison(l[i]);
+    taille += strlen(temp) + 3;
+    formule = realloc(formule, taille);
+    strcat(formule,"(");
+    strcat(formule,temp);
+    free(temp);
+    strcat(formule,")&");
+
+    temp = au_moins_une_maison(l[i]);
+    taille += strlen(temp) + 3;
+    formule = realloc(formule, taille);
+    strcat(formule,"(");
+    strcat(formule,temp);
+    free(temp);
+
+    if (i!=4)
+      strcat(formule,")&");
+    else 
+      strcat(formule, "))");
+  }
+
+  return formule;
+  
+}
+
 /* pour un element elt, traduit qu'une personne i l'a et les autres ne l'ont pas
+
 */
 char* un_elt_une_personne (char* elt, int i) {
   char* result = malloc(2) ;
@@ -165,7 +319,7 @@ char* conjonction(char* elt1, char* elt2) {
   int taille_temp = strlen(elt1) + strlen(elt2) + 8 ;
   result[0] ='('; 
   result[1] = '\0' ;
-  char* temp = malloc(taille_temp) ; 
+  char* temp = malloc(taille_temp) ;
   for (int i = 1 ; i<=5 ; i++) {
     taille += taille_temp + 1 ;
     result = realloc(result, taille);
@@ -208,7 +362,7 @@ void probleme_einstein(char* nomfichier){
   
   char** types_elements[4] = {couleurs , boissons , animaux , sports};
   for (int i = 0 ; i<4 ; i++) {
-    conditions[i] = type_elt(types_elements[i]);
+    conditions[i] = unicite(types_elements[i]);
   }
   
   conditions[4] = conjonction("anglais","rouge");
@@ -248,26 +402,52 @@ void test() {
   
   char* test1 = un_elt_une_personne("rouge", 2);
   //fprintf(f, "%s\n\n",test1);
+  free(test1);
   
   test1 = un_elt("rouge");
   //fprintf(f, "%s\n\n", test1);
+  free(test1);
   
   test1 = une_personne_un_elt(1,0,l);
   //fprintf(f, "%s\n\n", test1);
+  free(test1);
   
   test1 = une_personne(1,l);
   //fprintf(f, "%s\n\n", test1);
+  free(test1);
   
   test1 = type_elt(l);
-  fprintf(f,"%s\n\n",test1);
+  //fprintf(f,"%s\n\n",test1);
+  free(test1);
   
   test1 = voisin_gauche("verte","blanche");
   //fprintf(f, "%s\n\n",test1);
+  free(test1);
   
   test1 = conjonction ("anglais","rouge");
   //fprintf(f, "%s\n\n",test1);
-  
   free(test1);
+  
+  test1 = au_plus_une_maison("rouge");
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = au_plus_un_elt(1,l);
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = au_moins_une_maison ("rouge");
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = au_moins_un_elt (1, l);
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = unicite(l);
+  fprintf(f, "%s\n\n",test1);
+  free(test1);
+
   fclose(f);
 }
 
