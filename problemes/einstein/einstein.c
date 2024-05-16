@@ -208,28 +208,28 @@ void probleme_einstein(char* nomfichier){
   
   char** types_elements[4] = {couleurs , boissons , animaux , sports};
   for (int i = 0 ; i<4 ; i++) {
-    conditions[i+15] = type_elt(types_elements[i]);
+    conditions[i] = type_elt(types_elements[i]);
   }
   
-  conditions[0] = conjonction("anglais","rouge");
-  conditions[1] = conjonction("suedois","chiens");
-  conditions[2] = conjonction("danois","the");
-  conditions[3] = voisin_gauche("verte","blanche");
-  conditions[4] = conjonction("verte","cafe");
-  conditions[5] = conjonction("velo","oiseaux");
-  conditions[6] = conjonction("jaune","danse");
-  conditions[7] = "lait_3";
-  conditions[8] = "norvegien_1";
-  conditions[9] = voisins("escalade","chats");
-  conditions[10] = voisins("cheval","danse");
-  conditions[11] = conjonction("yop","basket");
-  conditions[12] = conjonction("allemand","karate");
-  conditions[13] = voisins("norvegien","bleue");
-  conditions[14] = voisins("escalade","eau");
+  conditions[4] = conjonction("anglais","rouge");
+  conditions[5] = conjonction("suedois","chiens");
+  conditions[6] = conjonction("danois","the");
+  conditions[7] = voisin_gauche("verte","blanche");
+  conditions[8] = conjonction("verte","cafe");
+  conditions[9] = conjonction("velo","oiseaux");
+  conditions[10] = conjonction("jaune","danse");
+  conditions[11] = "lait_3";
+  conditions[12] = "norvegien_1";
+  conditions[13] = voisins("escalade","chats");
+  conditions[14] = voisins("cheval","danse");
+  conditions[15] = conjonction("yop","basket");
+  conditions[16] = conjonction("allemand","karate");
+  conditions[17] = voisins("norvegien","bleue");
+  conditions[18] = voisins("escalade","eau");
 
   for (int i = 0 ; i<19 ; i++){
     fprintf(f,"%s",conditions[i]);
-    if (i!=7 & i!=8) {
+    if (i!=11 & i!=12) {
       free(conditions[i]);
     }
     if (i != 18) {

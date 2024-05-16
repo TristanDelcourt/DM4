@@ -1,4 +1,5 @@
 open Hashtbl
+open Printf
 
 type formule =
   | Var of string
@@ -321,18 +322,18 @@ let quine_v2 (f : formule) : sat_result =
     | Top, _ -> Some (valuation_init vars)
     | Bot, _ -> None
     | phi, x :: q -> (
+        Printf.printf "%s\n" x;
         let f1, b1 = simpl_full_compt (subst phi x Top) in
         let f2, b2 = simpl_full_compt (subst phi x Bot) in
-        match b1 > b2 with
-        | true -> (
-            match aux f1 q with
+        if b1 > b2 then
+          (match aux f1 q with
             | Some v -> Some ((x, true) :: v)
             | None -> (
                 match aux f2 q with
                 | Some v -> Some ((x, false) :: v)
                 | None -> None))
-        | false -> (
-            match aux f2 q with
+        else 
+          (match aux f2 q with
             | Some v -> Some ((x, false) :: v)
             | None -> (
                 match aux f1 q with
@@ -349,19 +350,19 @@ let quine_v2 (f : formule) : sat_result =
 let est_fnc (f : formule) : bool = 
   let rec aux (b_ou : bool) (b_non : bool) (f1 : formule) = 
     if (b_non) then (match f1 with 
-      |Var _ |Top |Bot -> true
-      |_ -> false )
+      | Var _ | Top | Bot -> true
+      | _ -> false )
     else 
       (if (b_ou) then (match f1 with
-        |Or (f2,f3) -> (aux b_ou b_non f2)&&(aux b_ou b_non f3)
-        |Var _ |Top |Bot -> true
-        |Not f2 -> aux b_ou true f2 
-        |_ -> false)
+        | Or (f2,f3) -> (aux b_ou b_non f2)&&(aux b_ou b_non f3)
+        | Var _ | Top | Bot -> true
+        | Not f2 -> aux b_ou true f2 
+        | _ -> false)
       else (match f1 with 
-        |Var _ |Top |Bot -> true
-        |Not f2 -> aux b_ou true f2
-        |Or (f1,f2) -> (aux true b_non f2)&&(aux true b_non f2)
-        |And (f1,f2) -> (aux b_ou b_non f2)&&(aux b_ou b_non f2)
+        | Var _ | Top | Bot -> true
+        | Not f2 -> aux b_ou true f2
+        | Or (f1,f2) -> (aux true b_non f2)&&(aux true b_non f2)
+        | And (f1,f2) -> (aux b_ou b_non f2)&&(aux b_ou b_non f2)
         | Id n -> failwith "pas le bon algo"))
   in aux false false f
 
@@ -449,7 +450,7 @@ let create_hash (l: string list) =
               fill_hash q (n+1)
   in
   let n = fill_hash l 0 in
-  
+
   (n, tovar, toid)
 
 let rec formule_var_to_id (f: formule) toid = 
@@ -469,9 +470,8 @@ match f with
 | _ -> f
 
 let rec valuation_init_id n = 
-  match n>=0 with 
-    | false -> []
-    | true -> (n, false)::valuation_init_id (n-1)
+  if n>=0 then (n, false)::valuation_init_id (n-1) else []
+
 
 let id_to_vals (l: (int*bool) list option) d : sat_result = 
   match l with
@@ -495,16 +495,15 @@ let quine_v3 (f : formule) : sat_result =
     | phi -> (
         let f1, b1 = simpl_full_compt (subst_id phi n Top) in
         let f2, b2 = simpl_full_compt (subst_id phi n Bot) in
-        match b1 > b2 with
-        | true -> (
-            match aux f1 (n-1) with
+        if b1 > b2 then
+          (match aux f1 (n-1) with
             | Some v -> Some ((n, true) :: v)
             | None -> (
                 match aux f2 (n-1) with
                 | Some v -> Some ((n, false) :: v)
                 | None -> None))
-        | false -> (
-            match aux f2 (n-1) with
+        else 
+          (match aux f2 (n-1) with
             | Some v -> Some ((n, false) :: v)
             | None -> (
                 match aux f1 (n-1) with
@@ -807,18 +806,21 @@ let main () =
   | "test" -> test ()
   | "fred" -> fred ()
   | _ ->
+      print_string "Reading file...\n";
       let str = read_file Sys.argv.(1) in
+      print_string "Parsing...\n";
       let formule = parse str in
+      print_string "Done.\n\n";
       let fnc = if nofnc then false else est_fnc formule in
       let result =
-        if fnc then quine_fnc formule
+        if fnc then (print_string "Using quine fnc\n"; quine_fnc formule)
         else
           match version with
-          | 0 -> satsolver_naif formule
-          | 1 -> quine formule
-          | 2 -> quine_v2 formule
-          | 3 -> quine_v3 formule
-          | _ -> quine_v3 formule (*Solveur par defaut*)
+          | 0 -> print_string "Using Naif\n"; satsolver_naif formule
+          | 1 -> print_string "Using quine\n"; quine formule
+          | 2 -> print_string "Using quine v2\n"; quine_v2 formule
+          | 3 -> print_string "Using quine v3\n"; quine_v3 formule
+          | _ -> print_string "Using quine v3\n"; quine_v3 formule (*Solveur par defaut*)
       in
       if hide then () else print_true result;
       if tofile then write_file tofilepath result else ()
