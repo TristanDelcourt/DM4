@@ -128,13 +128,12 @@ let read_file (fn : string) : string =
 
 (*** Manipulation de formules logiques ***)
 
-(*compte ops f renvoie le nombre d'opérateurs utilisés dans s*)
+(*compte ops f renvoie le nombre d'opérateurs utilisés dans f*)
 let rec compte_ops (f : formule) : int =
   match f with
-  | Var _ | Top | Bot -> 0
+  | Var _ | Top | Bot | Id _ -> 0
   | And (a, b) | Or (a, b) -> 1 + compte_ops a + compte_ops b
   | Not a -> 1 + compte_ops a
-  | Id n -> failwith "pas le bon algo"
  
 (*verifie si une liste est triee dans l'ordre croissant et sans doublon*)
 let rec st_croissant (l : 'a list) : bool =
@@ -164,7 +163,7 @@ let liste_var (f : formule) : string list =
     | And (a, b) | Or (a, b) -> union (aux a l) (aux b l)
     | Not a -> aux a l
     | Top | Bot -> l
-    | Id n -> []
+    | Id n -> failwith "liste_var appelé sur un formule composé de ID"
   in
   aux f []
 
@@ -181,7 +180,7 @@ let rec interpret_valuation (v : valuation) (f : formule) : bool =
   | And (a, b) -> interpret_valuation v a && interpret_valuation v b
   | Or (a, b) -> interpret_valuation v a || interpret_valuation v b
   | Not a -> not (interpret_valuation v a)
-  | Id n -> failwith "pas le bon algo"
+  | Id n -> failwith "Formule avec des ID, impossible de savoir son string associé"
 
 (* pour un nombre binaire écrit dans une liste renvoie le même nombre binaire + 1*)
 let rec add_one (l : bool list) : bool list =
@@ -211,6 +210,7 @@ let satsolver_naif (f : formule) : sat_result =
         else tester_valuation (valuation_next u)
     | None -> None
   in
+  Printf.printf "Solving...\n\n%!";
   tester_valuation (Some (valuation_init (liste_var f)))
 
 (*** Algorithme de Quine ***)
@@ -461,6 +461,8 @@ let quine_fnc (f : formule) : sat_result =
 (*end quine FNC*)
 
 (*quine v3*)
+type sat_result_id = (int*bool) list option
+
 
 let create_hash (l: string list) = 
   let tovar = Hashtbl.create 300 in
@@ -496,7 +498,7 @@ let rec valuation_init_id n =
   if n>=0 then (n, false)::valuation_init_id (n-1) else []
 
 
-let id_to_vals (l: (int*bool) list option) d : sat_result = 
+let id_to_vals (l: sat_result_id) d : sat_result = 
   match l with
     | None -> None
     | Some l1 -> 
@@ -511,7 +513,7 @@ let id_to_vals (l: (int*bool) list option) d : sat_result =
       aux l1 d
   
 let quine_v3 (f : formule) : sat_result =
-  let rec aux (f1 : formule) (n: int) : (int*bool) list option =
+  let rec aux (f1 : formule) (n: int) : sat_result_id =
     match f1 with
     | Top -> Some (valuation_init_id n)
     | Bot -> None
@@ -836,17 +838,18 @@ let main () =
       let str = read_file Sys.argv.(1) in
       Printf.printf "Parsing...\n%!";
       let formule = parse str in
-      Printf.printf "Done.\n\n%!";
+      Printf.printf "Done.\n\n";
+      Printf.printf "%d operator\n" (compte_ops formule);
       let fnc = if nofnc then false else (Printf.printf "Testing for cnf...\n%!"; est_fnc formule) in
       let result =
-        if fnc then (Printf.printf "Using quine fnc\n-- \n\n%!"; quine_fnc formule)
+        if fnc then (Printf.printf "Using quine fnc\n-- \n\n"; quine_fnc formule)
         else
           match version with
-          | 0 -> Printf.printf "Using Naif\n-- \n\n%!"; satsolver_naif formule
-          | 1 -> Printf.printf "Using quine v1\n-- \n\n%!"; quine formule
-          | 2 -> Printf.printf "Using quine v2\n-- \n\n%!"; quine_v2 formule
-          | 3 -> Printf.printf "Using quine v3\n-- \n\n%!"; quine_v3 formule
-          | _ -> Printf.printf "Using quine v3\n-- \n\n%!"; quine_v3 formule (*Solveur par defaut*)
+          | 0 -> Printf.printf "Using Naif\n-- \n\n"; satsolver_naif formule
+          | 1 -> Printf.printf "Using quine v1\n-- \n\n"; quine formule
+          | 2 -> Printf.printf "Using quine v2\n-- \n\n"; quine_v2 formule
+          | 3 -> Printf.printf "Using quine v2\n-- \n\n"; quine_v2 formule
+          | _ -> Printf.printf "Using quine v3\n-- \n\n"; quine_v3 formule (*Solveur par defaut*)
       in
       if hide then () else print_true result;
       if tofile then write_file tofilepath result else ()
