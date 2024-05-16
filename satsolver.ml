@@ -741,7 +741,7 @@ let help () =
     \   >>> ./satsolver <chemin du fichier> [arguments facultatifs]\n\n";
   print_string
     "Par défaut, le satsolver va detecter si la formule est sous FNC et \
-     utiliser le resolveur optimisé pour cela, sinon il va utiliser Quine_v2. \
+     utiliser le resolveur optimisé pour cela, sinon il va utiliser Quine_v1. \
      Mais on peut modifier son comportement avec les arguments facultatifs \
      suivants:\n\n";
   print_string "  -hide             (n'affiche pas le resultat)\n";
@@ -848,8 +848,8 @@ let main () =
           | 0 -> Printf.printf "Using Naif\n-- \n\n"; satsolver_naif formule
           | 1 -> Printf.printf "Using quine v1\n-- \n\n"; quine formule
           | 2 -> Printf.printf "Using quine v2\n-- \n\n"; quine_v2 formule
-          | 3 -> Printf.printf "Using quine v2\n-- \n\n"; quine_v2 formule
-          | _ -> Printf.printf "Using quine v3\n-- \n\n"; quine_v3 formule (*Solveur par defaut*)
+          | 3 -> Printf.printf "Using quine v3\n-- \n\n"; quine_v3 formule
+          | _ -> Printf.printf "Using quine v1\n-- \n\n"; quine formule (*Solveur par defaut*)
       in
       if hide then () else print_true result;
       if tofile then write_file tofilepath result else ()
