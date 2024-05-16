@@ -258,6 +258,7 @@ let quine (f : formule) : sat_result =
     | Top, _ -> Some (valuation_init vars)
     | Bot, _ -> None
     | phi, x :: q -> (
+        (*Printf.printf "%s\n%!" x;*)
         match aux (simpl_full (subst phi x Top)) q with
         | Some v -> Some ((x, true) :: v)
         | None -> (
@@ -266,6 +267,7 @@ let quine (f : formule) : sat_result =
             | None -> None))
     | _ -> failwith "impossible"
   in
+  Printf.printf "Solving...\n\n%!";
   aux (simpl_full f) (liste_var f)
 
 let print_true (s : sat_result) =
@@ -322,7 +324,7 @@ let quine_v2 (f : formule) : sat_result =
     | Top, _ -> Some (valuation_init vars)
     | Bot, _ -> None
     | phi, x :: q -> (
-        Printf.printf "%s\n" x;
+        (*Printf.printf "%s\n%!" x;*)
         let f1, b1 = simpl_full_compt (subst phi x Top) in
         let f2, b2 = simpl_full_compt (subst phi x Bot) in
         if b1 > b2 then
@@ -341,6 +343,7 @@ let quine_v2 (f : formule) : sat_result =
                 | None -> None)))
     | _ -> failwith "impossible"
   in
+  Printf.printf "Solving...\n\n%!";
   aux (simpl_full f) (liste_var f)
 (*end quine v2*)
 
@@ -493,6 +496,7 @@ let quine_v3 (f : formule) : sat_result =
     | Top -> Some (valuation_init_id n)
     | Bot -> None
     | phi -> (
+        (*Printf.printf "%d\n%!" n;*)
         let f1, b1 = simpl_full_compt (subst_id phi n Top) in
         let f2, b2 = simpl_full_compt (subst_id phi n Bot) in
         if b1 > b2 then
@@ -510,8 +514,11 @@ let quine_v3 (f : formule) : sat_result =
                 | Some v -> Some ((n, true) :: v)
                 | None -> None)))
   in
+  Printf.printf "Creating hashtables...\n%!";
   let n, tovar, toid = create_hash (liste_var f) in
+  Printf.printf "Converting formula...\n%!";
   let f1 = formule_var_to_id f toid in
+  Printf.printf "Solving...\n\n%!";
   let res = aux (simpl_full f1) (n-1) in
   id_to_vals res tovar
 
@@ -721,12 +728,11 @@ let help () =
     "  -nofnc            (désactive la detection de formule fnc, et donc de \
      l'algorithme associé)\n";
   print_string
-    "  -naif -q1 -q2     (utilise le resolveur naif/quine version 1/quine \
+    "  -naif -q1 -q2 -q3 (utilise le resolveur naif/quine version 1/quine \
      version 2 (*))\n\n";
   print_string "Tout autre argument sera ignoré\n\n";
   print_string
-    "(*) Si plusieurs solveurs sont donnés alors le naif l'emporte sur q1 qui \
-     l'emporte sur q2\n"
+    "(*) Si plusieurs solveurs sont donnés alors un l'orde est défini par naif>q1>q2>q3\n"
 
 let fred () =
   print_string "                                      /@@@&#%@@@@@@                           \n";
@@ -806,21 +812,21 @@ let main () =
   | "test" -> test ()
   | "fred" -> fred ()
   | _ ->
-      print_string "Reading file...\n";
+      Printf.printf "Reading file...\n%!";
       let str = read_file Sys.argv.(1) in
-      print_string "Parsing...\n";
+      Printf.printf "Parsing...\n%!";
       let formule = parse str in
-      print_string "Done.\n\n";
-      let fnc = if nofnc then false else est_fnc formule in
+      Printf.printf "Done.\n\n%!";
+      let fnc = if nofnc then false else (Printf.printf "Testing for cnf...\n%!"; est_fnc formule) in
       let result =
-        if fnc then (print_string "Using quine fnc\n"; quine_fnc formule)
+        if fnc then (Printf.printf "Using quine fnc\n-- \n\n%!"; quine_fnc formule)
         else
           match version with
-          | 0 -> print_string "Using Naif\n"; satsolver_naif formule
-          | 1 -> print_string "Using quine\n"; quine formule
-          | 2 -> print_string "Using quine v2\n"; quine_v2 formule
-          | 3 -> print_string "Using quine v3\n"; quine_v3 formule
-          | _ -> print_string "Using quine v3\n"; quine_v3 formule (*Solveur par defaut*)
+          | 0 -> Printf.printf "Using Naif\n-- \n\n%!"; satsolver_naif formule
+          | 1 -> Printf.printf "Using quine v1\n-- \n\n%!"; quine formule
+          | 2 -> Printf.printf "Using quine v2\n-- \n\n%!"; quine_v2 formule
+          | 3 -> Printf.printf "Using quine v3\n-- \n\n%!"; quine_v3 formule
+          | _ -> Printf.printf "Using quine v3\n-- \n\n%!"; quine_v3 formule (*Solveur par defaut*)
       in
       if hide then () else print_true result;
       if tofile then write_file tofilepath result else ()
