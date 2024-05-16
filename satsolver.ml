@@ -366,8 +366,8 @@ let est_fnc (f : formule) : bool =
       else (match f1 with 
         | Var _ | Top | Bot -> true
         | Not f2 -> aux b_ou true f2
-        | Or (f1,f2) -> (aux true b_non f2)&&(aux true b_non f2)
-        | And (f1,f2) -> (aux b_ou b_non f2)&&(aux b_ou b_non f2)
+        | Or (f2,f3) -> (aux true b_non f2)&&(aux true b_non f3)
+        | And (f2,f3) -> (aux b_ou b_non f2)&&(aux b_ou b_non f3)
         | Id n -> failwith "pas le bon algo"))
   in aux false false f
 
