@@ -219,46 +219,47 @@ char* voisins(char* elt1, char* elt2) {
 /*écrit la formule propositionnelle traduisant le problème d'Einstein dans le fichier nomfichier*/
 void probleme_einstein(char* nomfichier){
   FILE* f = fopen(nomfichier, "w");
-  
+
   char* couleurs[5] = {"rouge","bleue","jaune","blanche","verte"}; 
   char* boissons[5] = {"cafe","the","lait","yop","eau"}; 
   char* animaux[5] = {"chiens","oiseaux","chats","poisson","cheval"};
   char* sports[5] = {"velo","danse","escalade","karate","basket"}; 
+  char* nationalites[5] = {"anglais","danois","norvegien","allemand","suedois"}; 
 
-  char** conditions = malloc(19*sizeof(char*));
+  char** conditions = malloc(20*sizeof(char*));
 
-  
-  char** types_elements[4] = {couleurs , boissons , animaux , sports};
-  for (int i = 0 ; i<4 ; i++) {
+
+  char** types_elements[5] = {couleurs , boissons , animaux , sports, nationalites};
+  for (int i = 0 ; i<5 ; i++) {
     conditions[i] = unicite(types_elements[i]);
   }
-  
-  conditions[4] = conjonction("anglais","rouge");
-  conditions[5] = conjonction("suedois","chiens");
-  conditions[6] = conjonction("danois","the");
-  conditions[7] = voisin_gauche("verte","blanche");
-  conditions[8] = conjonction("verte","cafe");
-  conditions[9] = conjonction("velo","oiseaux");
-  conditions[10] = conjonction("jaune","danse");
-  conditions[11] = "lait_3";
-  conditions[12] = "norvegien_1";
-  conditions[13] = voisins("escalade","chats");
-  conditions[14] = voisins("cheval","danse");
-  conditions[15] = conjonction("yop","basket");
-  conditions[16] = conjonction("allemand","karate");
-  conditions[17] = voisins("norvegien","bleue");
-  conditions[18] = voisins("escalade","eau");
 
-  for (int i = 0 ; i<19 ; i++){
+  conditions[5] = conjonction("anglais","rouge");
+  conditions[6] = conjonction("suedois","chiens");
+  conditions[7] = conjonction("danois","the");
+  conditions[8] = voisin_gauche("verte","blanche");
+  conditions[9] = conjonction("verte","cafe");
+  conditions[10] = conjonction("velo","oiseaux");
+  conditions[11] = conjonction("jaune","danse");
+  conditions[12] = "lait_3";
+  conditions[13] = "norvegien_1";
+  conditions[14] = voisins("escalade","chats");
+  conditions[15] = voisins("cheval","danse");
+  conditions[16] = conjonction("yop","basket");
+  conditions[17] = conjonction("allemand","karate");
+  conditions[18] = voisins("norvegien","bleue");
+  conditions[19] = voisins("escalade","eau");
+
+  for (int i = 0 ; i<20 ; i++){
     fprintf(f,"%s",conditions[i]);
-    if (i!=11 & i!=12) {
+    if (i!=12 & i!=13) {
       free(conditions[i]);
     }
     if (i != 18) {
       fprintf(f,"%s", "&");
     } 
   } 
-  
+
   fclose(f);
 }
 

@@ -836,14 +836,14 @@ let main () =
       if not noinfo then Printf.printf "%d operators\n" (compte_ops formule);
       let fnc = if nofnc then false else (print_condition "Testing for cnf...\n%!" noinfo; est_fnc formule) in
       let result =
-        if fnc then (print_condition "Using quine fnc\n" noinfo; time noinfo quine_fnc formule)
+        if fnc then (print_condition "Using quine fnc\n%!" noinfo; time noinfo quine_fnc formule)
         else
           match version with
-          | 0 -> print_condition "Using Naif\n" noinfo; time noinfo satsolver_naif formule
-          | 1 -> print_condition "Using quine v1\n" noinfo; time noinfo quine formule
-          | 2 -> print_condition "Using quine v2\n" noinfo; time noinfo quine_v2 formule
-          | 3 -> print_condition "Using quine v3\n" noinfo; time noinfo quine_v3 formule
-          | _ -> print_condition "Using quine v1\n" noinfo; time noinfo quine formule (*Solveur par defaut*)
+          | 0 -> print_condition "Using Naif\n%!" noinfo; time noinfo satsolver_naif formule
+          | 1 -> print_condition "Using quine v1\n%!" noinfo; time noinfo quine formule
+          | 2 -> print_condition "Using quine v2\n%!" noinfo; time noinfo quine_v2 formule
+          | 3 -> print_condition "Using quine v3\n%!" noinfo; time noinfo quine_v3 formule
+          | _ -> print_condition "Using quine v1\n%!" noinfo; time noinfo quine formule (*Solveur par defaut*)
       in
       if hide then () else print_true result;
       if tofile then write_file tofilepath result else ()
