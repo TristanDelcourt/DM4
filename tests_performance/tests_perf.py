@@ -21,13 +21,13 @@ for exp in range(puiss_max+1):
         ["../generateur_formule/gen", "test_perf.txt",
          f"{puissance**exp}"])
     debut = time.time()
-    subprocess.call(["../satsolver", "test_perf.txt", "-q1", "-nofnc", "-hide"])
+    subprocess.call(["../satsolver", "test_perf.txt", "-q1", "-nofnc", "-hide", "-noinfo"])
     resultats[0][exp] += (time.time() - debut)
     debut = time.time()
-    subprocess.call(["../satsolver", "test_perf.txt", "-q2", "-nofnc", "-hide"])
+    subprocess.call(["../satsolver", "test_perf.txt", "-q2", "-nofnc", "-hide", "-noinfo"])
     resultats[1][exp] += (time.time() - debut)
     debut = time.time()
-    subprocess.call(["../satsolver", "test_perf.txt", "-q3", "-nofnc", "-hide"])
+    subprocess.call(["../satsolver", "test_perf.txt", "-q3", "-nofnc", "-hide", "-noinfo"])
     resultats[2][exp] += (time.time() - debut)
 
   resultats[0][exp] /= nb_tests
