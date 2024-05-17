@@ -839,7 +839,7 @@ let main () =
       Printf.printf "Parsing...\n%!";
       let formule = parse str in
       Printf.printf "Done.\n\n";
-      Printf.printf "%d operator\n" (compte_ops formule);
+      Printf.printf "%d operators\n" (compte_ops formule);
       let fnc = if nofnc then false else (Printf.printf "Testing for cnf...\n%!"; est_fnc formule) in
       let result =
         if fnc then (Printf.printf "Using quine fnc\n-- \n\n"; quine_fnc formule)
