@@ -531,6 +531,29 @@ let quine_v3 (f : formule) : sat_result =
 
 (*end quine v3*)
 
+(*quine v4*)
+
+let quine_v4 (f : formule) : sat_result =
+  let rec aux (f1 : formule) (vars : string list) : sat_result =
+    match f1 with
+    | Top -> Some (valuation_init vars)
+    | Bot -> None
+    | And (a, b) when est_fnc (And(a, b)) -> quine_fnc (And(a, b))
+    | _ -> (match vars with 
+      | x::q -> (
+        (*Printf.printf "%s\n%!" x;*)
+        match aux (simpl_full (subst f1 x Top)) q with
+        | Some v -> Some ((x, true) :: v)
+        | None -> (
+            match aux (simpl_full (subst f1 x Bot)) q with
+            | Some v -> Some ((x, false) :: v)
+            | None -> None))
+      | _ -> failwith "impossible")
+  in
+  aux (simpl_full f) (liste_var f)
+
+(*end quine v4*)
+
 (*** Tests ***)
 
 (*Teste la fonction qui compte le noùbre d'operateurs dans une formule*)
@@ -820,6 +843,7 @@ let main () =
     else if Array.mem "-q1" Sys.argv then 1
     else if Array.mem "-q2" Sys.argv then 2
     else if Array.mem "-q3" Sys.argv then 3
+    else if Array.mem "-q4" Sys.argv then 4
     else -1
   in
 
@@ -833,7 +857,10 @@ let main () =
       print_condition "Parsing...\n%!" noinfo;
       let formule = parse str in
       print_condition "Done.\n\n" noinfo;
-      if not noinfo then Printf.printf "%d operators\n" (compte_ops formule);
+      if not noinfo then 
+        (Printf.printf "%d operators, %d variables\n" 
+          (compte_ops formule) 
+          (List.length (liste_var formule)));
       let fnc = if nofnc then false else (print_condition "Testing for cnf...\n%!" noinfo; est_fnc formule) in
       let result =
         if fnc then (print_condition "Using quine fnc\n%!" noinfo; time noinfo quine_fnc formule)
@@ -843,6 +870,7 @@ let main () =
           | 1 -> print_condition "Using quine v1\n%!" noinfo; time noinfo quine formule
           | 2 -> print_condition "Using quine v2\n%!" noinfo; time noinfo quine_v2 formule
           | 3 -> print_condition "Using quine v3\n%!" noinfo; time noinfo quine_v3 formule
+          | 4 -> print_condition "Using quine v4\n%!" noinfo; time noinfo quine_v4 formule
           | _ -> print_condition "Using quine v1\n%!" noinfo; time noinfo quine formule (*Solveur par defaut*)
       in
       if hide then () else print_true result;

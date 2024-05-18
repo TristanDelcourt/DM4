@@ -255,7 +255,7 @@ void probleme_einstein(char* nomfichier){
     if (i!=12 & i!=13) {
       free(conditions[i]);
     }
-    if (i != 18) {
+    if (i != 19) {
       fprintf(f,"%s", "&");
     } 
   } 
