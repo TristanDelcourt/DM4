@@ -402,38 +402,44 @@ let rec simplify_fnc (f : formule) (x : formule) : formule =
   in
 
   match f with
-  | And (And(a1, b1), And (a2, b2)) ->(
+  | And (And(a1, b1), And (a2, b2)) -> ( (*ET avec 2 ET*)
     let f1 = simplify_fnc (And(a1, b1)) x in
-    let f2 = simplify_fnc (And(a2, b2)) x in
-    match f1, f2 with
-      | Bot, _ -> Bot
-      | _, Bot -> Bot
-      | Top, Top -> Top
-      | Top, _ -> f2
-      | _, Top -> f1
-      | _ -> And (f1, f2))
-
+    match f1 with
+      | Bot -> Bot
+      | _ -> 
+        let f2 = simplify_fnc (And(a2, b2)) x in
+        match f2 with
+          | Bot -> Bot
+          | Top when f1 = Top -> Top
+          | Top when f1 != Top -> f1
+          | _  when f1 = Top -> f2
+          | _ -> And(f1, f2))
     
-  | And (a, And (a1, b1)) | And (And (a1, b1), a)-> (
+  | And (a, And (a1, b1)) | And (And (a1, b1), a)-> ( (*ET avec un ET et un OU*)
       let f1 = iterate a x in
-      let f2 = simplify_fnc (And (a1, b1)) x in
-      match f1, f2 with
-      | Bot, _ -> Bot
-      | _, Bot -> Bot
-      | Top, Top -> Top
-      | Top, _ -> f2
-      | _, Top -> f1
-      | _ -> And (f1, f2))
+      match f1 with
+      | Bot -> Bot
+      | _ -> 
+        let f2 = simplify_fnc (And(a1, b1)) x in
+        match f2 with
+          | Bot -> Bot
+          | Top when f1 = Top -> Top
+          | Top when f1 != Top -> f1
+          | _  when f1 = Top -> f2
+          | _ -> And(f1, f2))
       
-  | And (a, b) -> (
-      let f1, f2 = (iterate a x, iterate b x) in
-      match (f1, f2) with
-      | Bot, _ -> Bot
-      | _, Bot -> Bot
-      | Top, Top -> Top
-      | Top, _ -> f2
-      | _, Top -> f1
-      | _ -> And (f1, f2))
+  | And (a, b) -> ( (* ET avec 2 OU*)
+      let f1 = iterate a x in
+      match f1 with
+      | Bot -> Bot
+      | _ -> 
+        let f2 = iterate b x in
+        match f2 with
+          | Bot -> Bot
+          | Top when f1 = Top -> Top
+          | Top when f1 != Top -> f1
+          | _  when f1 = Top -> f2
+          | _ -> And(f1, f2))
   | _ -> iterate f x (* Plus qu'une conjonction *)
 
 let quine_fnc (f : formule) : sat_result =

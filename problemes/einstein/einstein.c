@@ -1,7 +1,8 @@
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 /* traduit que pour un element, au plus une maison y correspond */
 char* au_plus_une_maison (char* elt){
@@ -180,6 +181,125 @@ char* voisin_gauche (char* elt1, char* elt2) {
   return result ; 
 }
 
+/*traduit que la maison associée à l'élément numéro 1 est voisine de celle associée à l'élément numéro 2*/
+char* voisin_gauche_fnc (char* elt1, char* elt2) {
+  char* result = malloc(3); 
+  int taille = 2 ; 
+  int taille_temp = MAX(strlen(elt1), strlen(elt2)) + 5 ;
+  result[0] ='('; 
+  result[1] = '\0' ;
+
+  char* t[2] = {elt1, elt2};
+  char* temp = malloc(taille_temp) ; 
+  for (int i = 0 ; i<16 ; i++) {
+    sprintf(temp, "(%s_%d|", t[i>7], (i%8>4) + 1);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[i%8>3], (i%8>3) + 2);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[i%4>1], (i%4>1) + 3);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d)", t[i%2], (i%2) + 4);
+    result = realloc(result, strlen(result) + strlen(temp) +2);
+    strcat(result, temp);
+
+    if(i!=15)
+      strcat(result, "&");
+    else 
+      strcat(result, ")");
+  }
+  
+  free(temp);
+  return result ; 
+}
+
+char* voisins_fnc (char* elt1, char* elt2) {
+  char* result = malloc(3); 
+  int taille = 2 ; 
+  int taille_temp = MAX(strlen(elt1), strlen(elt2)) + 5 ;
+  result[0] ='('; 
+  result[1] = '\0' ;
+
+  char* t[2] = {elt1, elt2};
+  char* temp = malloc(taille_temp) ; 
+  for (int i = 0 ; i<256 ; i++) {
+    int j = i/16;
+    
+    sprintf(temp, "(%s_%d|", t[j>7], (j%8>4) + 1);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[j%8>3], (j%8>3) + 2);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[j%4>1], (j%4>1) + 3);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[j%2], (j%2) + 4);
+    result = realloc(result, strlen(result) + strlen(temp) +2);
+    strcat(result, temp);
+
+    sprintf(temp, "%s_%d|", t[1 - (i>7)], (i%8>4) + 1);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[1 - (i%8>3)], (i%8>3) + 2);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[1 - (i%4>1)], (i%4>1) + 3);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d)", t[1 - (i%2)], (i%2) + 4);
+    result = realloc(result, strlen(result) + strlen(temp) +2);
+    strcat(result, temp);
+
+    if(i!=255)
+      strcat(result, "&");
+    else 
+      strcat(result, ")");
+  }
+
+  free(temp);
+  return result ; 
+}
+
+/*traduit le fait que l'élément 1 et 2 doivent être dans la même maison*/
+char* conjonction_fnc(char* elt1, char* elt2) {
+  char* result = malloc(3); 
+  int taille = 2 ; 
+  int taille_temp = MAX(strlen(elt1), strlen(elt2)) + 5 ;
+  result[0] ='('; 
+  result[1] = '\0' ;
+
+  char* t[2] = {elt1, elt2};
+  char* temp = malloc(taille_temp) ; 
+  for (int i = 0 ; i<32 ; i++) {
+    sprintf(temp, "(%s_%d|", t[i>15], 1);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[i%16>7], 2);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[i%8>3], 3);
+    result = realloc(result, strlen(result) + strlen(temp) +1);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d|", t[i%4>1], 4);
+    result = realloc(result, strlen(result) + strlen(temp) +2);
+    strcat(result, temp);
+    sprintf(temp, "%s_%d)", t[i%2], 5);
+    result = realloc(result, strlen(result) + strlen(temp) +2);
+    strcat(result, temp);
+
+    if(i!=31)
+      strcat(result, "&");
+    else 
+      strcat(result, ")");
+  }
+
+  free(temp);
+  return result ; 
+}
+
 /*traduit le fait que l'élément 1 et 2 doivent être dans la même maison*/
 char* conjonction(char* elt1, char* elt2) {
   char* result = malloc(2); 
@@ -213,7 +333,7 @@ char* voisins(char* elt1, char* elt2) {
   free(temp_1);
   free(temp_2);
   return result ; 
-}  
+}
 
 
 /*écrit la formule propositionnelle traduisant le problème d'Einstein dans le fichier nomfichier*/
@@ -234,21 +354,21 @@ void probleme_einstein(char* nomfichier){
     conditions[i] = unicite(types_elements[i]);
   }
 
-  conditions[5] = conjonction("anglais","rouge");
-  conditions[6] = conjonction("suedois","chiens");
-  conditions[7] = conjonction("danois","the");
-  conditions[8] = voisin_gauche("verte","blanche");
-  conditions[9] = conjonction("verte","cafe");
-  conditions[10] = conjonction("velo","oiseaux");
-  conditions[11] = conjonction("jaune","danse");
+  conditions[5] = conjonction_fnc("anglais","rouge");
+  conditions[6] = conjonction_fnc("suedois","chiens");
+  conditions[7] = conjonction_fnc("danois","the");
+  conditions[8] = voisin_gauche_fnc("verte","blanche");
+  conditions[9] = conjonction_fnc("verte","cafe");
+  conditions[10] = conjonction_fnc("velo","oiseaux");
+  conditions[11] = conjonction_fnc("jaune","danse");
   conditions[12] = "lait_3";
   conditions[13] = "norvegien_1";
-  conditions[14] = voisins("escalade","chats");
-  conditions[15] = voisins("cheval","danse");
-  conditions[16] = conjonction("yop","basket");
-  conditions[17] = conjonction("allemand","karate");
-  conditions[18] = voisins("norvegien","bleue");
-  conditions[19] = voisins("escalade","eau");
+  conditions[14] = voisins_fnc("escalade","chats");
+  conditions[15] = voisins_fnc("cheval","danse");
+  conditions[16] = conjonction_fnc("yop","basket");
+  conditions[17] = conjonction_fnc("allemand","karate");
+  conditions[18] = voisins_fnc("norvegien","bleue");
+  conditions[19] = voisins_fnc("escalade","eau");
 
   for (int i = 0 ; i<20 ; i++){
     fprintf(f,"%s",conditions[i]);
@@ -268,6 +388,7 @@ void probleme_einstein(char* nomfichier){
 void test() {
   FILE* f = fopen("testeinstein.txt", "w");
   char* l[5] = {"rouge","bleue","jaune","blanche","verte"};
+  char* l2[5] = {"anglais","danois","norvegien","allemand","suedois"}; 
   
   char* test1 = voisin_gauche("verte","blanche");
   //fprintf(f, "%s\n\n",test1);
@@ -294,9 +415,26 @@ void test() {
   free(test1);
 
   test1 = unicite(l);
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = unicite(l2);
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = voisin_gauche_fnc("verte",  "rouge");
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = conjonction_fnc("anglais",  "rouge");
+  //fprintf(f, "%s\n\n",test1);
+  free(test1);
+
+  test1 = voisins_fnc("verte",  "rouge");
   fprintf(f, "%s\n\n",test1);
   free(test1);
 
+  
   fclose(f);
 }
 
