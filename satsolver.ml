@@ -210,7 +210,6 @@ let satsolver_naif (f : formule) : sat_result =
         else tester_valuation (valuation_next u)
     | None -> None
   in
-  Printf.printf "Solving...\n%!";
   tester_valuation (Some (valuation_init (liste_var f)))
 
 (*** Algorithme de Quine ***)
@@ -383,22 +382,47 @@ let rec creer_val (s : sat_result) (v : valuation) : sat_result =
       in
       Some (aux v1 v)
 
+let rec find_first_variable (f: formule): string = match f with
+  | Var x | Not (Var x) -> x
+  | Or (a,b) | And (a, b) -> find_first_variable a
+  | _ -> "" (* la formule est composé seulement de Top et Bot, le resultat ne sera pas traité *)
+
 let rec simplify_fnc (f : formule) (x : formule) : formule =
   let rec iterate f x =
     match (f, x) with
     | Var y, Var z when y = z -> Top
+    | Var y, Not (Var z) when y = z -> Bot
+    | Var y, _-> Var y
+    
     | Not (Var y), Not (Var z) when y = z -> Top
     | Not (Var y), Var z when y = z -> Bot
-    | Var y, Not (Var z) when y = z -> Bot
+    | Not (Var y), _ -> Not (Var y)
+    
+    
     | Or (Var y, b), Var z when y = z -> Top
     | Or (Not (Var y), b), Not (Var z) when y = z -> Top
     | Or (Var y, b), Not (Var z) when y = z -> iterate b x
     | Or (Not (Var y), b), Var z when y = z -> iterate b x
-    | Or (a, b), _ -> (
-        (* a une variable autre que x *)
-        let f1 = iterate b x in
-        match f1 with Top -> Top | Bot -> a | _ -> Or (a, f1))
-    | _ -> f (* f une variable autre que x *)
+    
+    
+    | Or (Var y, b), _ | Or (b, Var y), _ -> (
+      (* y une variable autre que x *)
+      let f1 = iterate b x in
+      match f1 with 
+        | Top -> Top 
+        | Bot -> Var y
+        | _ -> Or (Var y, f1))
+    | Or (Or(a1, b1), Or(a2,b2)) , _ -> (
+      (* 2 OU *)
+      let f1 = iterate (Or(a1, b1)) x in
+      match f1 with 
+        | Top -> Top 
+        | _ -> let f2 = iterate (Or(a2, b2)) x in match f2 with
+          | Top -> Top
+          | Bot when f1 = Bot -> Bot
+          | Bot when f1 != Bot -> f1
+          | _ -> Or(f1, f2))
+    | _ -> f
   in
 
   match f with
@@ -443,25 +467,24 @@ let rec simplify_fnc (f : formule) (x : formule) : formule =
   | _ -> iterate f x (* Plus qu'une conjonction *)
 
 let quine_fnc (f : formule) : sat_result =
-  let rec aux (f1 : formule) (vars : string list) : sat_result =
+  let rec aux (f1 : formule) (x: string) : sat_result =
     match f1 with
-    | Top -> Some (valuation_init vars)
+    | Top -> Some (valuation_init (liste_var f1))
     | Bot -> None
-    | _ -> (match vars with 
-      | x ::q ->
-        (let f2 = simplify_fnc f1 (Var x) in
-        match aux f2 (liste_var f2) with
-        | Some v -> Some ((x, true) :: v)
-        | None -> (
-            let f3 = simplify_fnc f1 (Not (Var x)) in
-            match aux f3 (liste_var f3) with
-            | Some v -> Some ((x, false) :: v)
-            | None -> None))
-      | _ -> failwith "impossible")
+    | _ -> 
+        let f2 = simplify_fnc f1 (Var x) in
+        match aux f2 (find_first_variable f2) with
+          | Some v -> Some ((x, true) :: v)
+          | None -> (
+              let f3 = simplify_fnc f1 (Not (Var x)) in
+              match aux f3 (find_first_variable f3) with
+              | Some v -> Some ((x, false) :: v)
+              | None -> None)
   in
 
   let vars = liste_var f in
-  creer_val (aux (simpl_full f) vars) (valuation_init vars)
+  let f = simpl_full f in
+  creer_val (aux f (find_first_variable f)) (valuation_init vars)
 (*end quine FNC*)
 
 (*quine v3*)

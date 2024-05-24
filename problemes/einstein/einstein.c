@@ -192,7 +192,7 @@ char* voisin_gauche_fnc (char* elt1, char* elt2) {
   char* t[2] = {elt1, elt2};
   char* temp = malloc(taille_temp) ; 
   for (int i = 0 ; i<16 ; i++) {
-    sprintf(temp, "(%s_%d|", t[i>7], (i%8>4) + 1);
+    sprintf(temp, "(%s_%d|", t[i>7], (i>7) + 1);
     result = realloc(result, strlen(result) + strlen(temp) +1);
     strcat(result, temp);
     sprintf(temp, "%s_%d|", t[i%8>3], (i%8>3) + 2);
@@ -224,39 +224,52 @@ char* voisins_fnc (char* elt1, char* elt2) {
 
   char* t[2] = {elt1, elt2};
   char* temp = malloc(taille_temp) ; 
-  for (int i = 0 ; i<256 ; i++) {
-    int j = i/16;
+  for (int i = 0 ; i<256 ; i++) {    
     
-    sprintf(temp, "(%s_%d|", t[j>7], (j%8>4) + 1);
+    sprintf(temp, "(%s_%d|", t[i>127], (i>127) + 1);
     result = realloc(result, strlen(result) + strlen(temp) +1);
     strcat(result, temp);
-    sprintf(temp, "%s_%d|", t[j%8>3], (j%8>3) + 2);
+    sprintf(temp, "%s_%d|", t[i%128>63], (i%128>63) + 2);
     result = realloc(result, strlen(result) + strlen(temp) +1);
     strcat(result, temp);
-    sprintf(temp, "%s_%d|", t[j%4>1], (j%4>1) + 3);
+    sprintf(temp, "%s_%d|", t[i%64>31], (i%64>31) + 3);
     result = realloc(result, strlen(result) + strlen(temp) +1);
     strcat(result, temp);
-    sprintf(temp, "%s_%d|", t[j%2], (j%2) + 4);
+    sprintf(temp, "%s_%d", t[i%32>15], (i%32>15) + 4);
     result = realloc(result, strlen(result) + strlen(temp) +2);
     strcat(result, temp);
 
-    sprintf(temp, "%s_%d|", t[1 - (i>7)], (i%8>4) + 1);
-    result = realloc(result, strlen(result) + strlen(temp) +1);
-    strcat(result, temp);
-    sprintf(temp, "%s_%d|", t[1 - (i%8>3)], (i%8>3) + 2);
-    result = realloc(result, strlen(result) + strlen(temp) +1);
-    strcat(result, temp);
-    sprintf(temp, "%s_%d|", t[1 - (i%4>1)], (i%4>1) + 3);
-    result = realloc(result, strlen(result) + strlen(temp) +1);
-    strcat(result, temp);
-    sprintf(temp, "%s_%d)", t[1 - (i%2)], (i%2) + 4);
-    result = realloc(result, strlen(result) + strlen(temp) +2);
-    strcat(result, temp);
+    if(!(i%128>63 == 1 - (i%16>7) && (i%128>63) + 2 == (i%16>7) + 1)){
+      sprintf(temp, "|%s_%d", t[1 - (i%16>7)], (i%16>7) + 1);
+      result = realloc(result, strlen(result) + strlen(temp) +1);
+      strcat(result, temp);
+    }
 
+    if(!(i>127 == 1 - (i%8>3) && (i>127) + 1 == (i%8>3) + 2
+        || i%64>31 == 1 - (i%8>3) && (i%64>31) + 3 == (i%8>3) + 2)){
+      sprintf(temp, "|%s_%d", t[1 - (i%8>3)], (i%8>3) + 2);
+      result = realloc(result, strlen(result) + strlen(temp) +1);
+      strcat(result, temp);
+    }
+
+    if(!(i%128>63 != 1 - (i%4>1) && (i%128>63) + 2 == (i%4>1) + 3
+       || i%32>15 != 1 - (i%4>1) && (i%32>15) + 4 == (i%4>1) + 3)){
+      sprintf(temp, "|%s_%d", t[1 - (i%4>1)], (i%4>1) + 3);
+      result = realloc(result, strlen(result) + strlen(temp) +1);
+      strcat(result, temp);
+    }
+    
+    if(!(i%64>31 != 1 - (i%2) && (i%64>31) + 3 == (i%2) + 4)){
+      sprintf(temp, "|%s_%d", t[1 - (i%2)], (i%2) + 4);
+      result = realloc(result, strlen(result) + strlen(temp) +1);
+      strcat(result, temp);
+    }
+
+    result = realloc(result, strlen(result) +3);
     if(i!=255)
-      strcat(result, "&");
+      strcat(result, ")&");
     else 
-      strcat(result, ")");
+      strcat(result, "))");
   }
 
   free(temp);
@@ -326,8 +339,8 @@ char* conjonction(char* elt1, char* elt2) {
 
 /* traduit le fait que les maisons correspondant à un l'élément 1 et celle correspondant à l'élément 2 sont voisines*/
 char* voisins(char* elt1, char* elt2) {
-  char* temp_1 = voisin_gauche(elt1,elt2); 
-  char* temp_2 = voisin_gauche(elt2,elt1); 
+  char* temp_1 = voisin_gauche_fnc(elt1,elt2); 
+  char* temp_2 = voisin_gauche_fnc(elt2,elt1); 
   char* result = malloc(4 + strlen(temp_1) + strlen(temp_2));
   sprintf(result, "(%s|%s)", temp_1,temp_2);
   free(temp_1);
@@ -415,7 +428,7 @@ void test() {
   free(test1);
 
   test1 = unicite(l);
-  //fprintf(f, "%s\n\n",test1);
+  fprintf(f, "%s\n\n",test1);
   free(test1);
 
   test1 = unicite(l2);

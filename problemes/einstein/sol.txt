@@ -1,0 +1,26 @@
+La formule est satisfiable en assignant 1 aux variables suivantes et 0 aux autres
+allemand_4
+anglais_3
+basket_5
+blanche_5
+bleue_2
+cafe_4
+chats_1
+cheval_2
+chiens_5
+danois_2
+danse_1
+eau_1
+escalade_2
+jaune_1
+karate_4
+lait_3
+norvegien_1
+oiseaux_3
+poisson_4
+rouge_3
+suedois_5
+the_2
+velo_3
+verte_4
+yop_5
